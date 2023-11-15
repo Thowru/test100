@@ -29,20 +29,23 @@ def main():
         kmeans = KMeans(n_clusters=2, random_state=42)
         kmeans.fit(df_entity[cols_to_train])
 
-        # 결과 표시
-        df_entity['cluster_kmeans'] = kmeans.predict(df_entity[cols_to_train])
-
-
         # DBSCAN Clustering
         dbscan = DBSCAN(eps=0.5, min_samples=5)
         df_entity['cluster_dbscan'] = dbscan.fit_predict(df_entity[cols_to_train])
+
+        # 결과 표시 - KMeans
+        st.write("KMeans 클러스터별 데이터 수:")
+        st.write(df_entity['cluster_kmeans'].value_counts())
+
+        st.write("KMeans 클러스터 0에 속한 Entity:")
+        st.write(df_entity[df_entity['cluster_kmeans'] == 0].index)
 
         # 결과 표시 - DBSCAN
         st.write("DBSCAN 클러스터별 데이터 수:")
         st.write(df_entity['cluster_dbscan'].value_counts())
 
-        st.write("DBSCAN 클러스터 0에 속한 Entity:")
-        st.write(df_entity[df_entity['cluster_dbscan'] == 0].index)
+        st.write("DBSCAN 클러스터 0을 제외한 Entity:")
+        st.write(df_entity[df_entity['cluster_dbscan'] != 0].index)
 
         # PCA를 사용하여 데이터의 차원을 2로 축소
         pca = PCA(n_components=2)
